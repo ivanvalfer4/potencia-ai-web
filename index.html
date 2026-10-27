@@ -1,0 +1,713 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Potencia-AI — Automatización con IA para salones de belleza</title>
+<meta name="description" content="Diagnóstico y automatización a medida para que tu salón de belleza no pierda llamadas, huecos ni clientas — y consiga clientas nuevas.">
+<style>
+  :root{
+    --bg: #F3F5FA;
+    --surface: #FFFFFF;
+    --surface-2: #E8ECF6;
+    --ink: #0C0E14;
+    --ink-soft: #4A5468;
+    --ink-faint: #8992A6;
+    --accent: #2C57F5;
+    --accent-strong: #1B3FD1;
+    --accent-ink: #FFFFFF;
+    --line: rgba(12,14,20,0.12);
+    --line-strong: rgba(12,14,20,0.26);
+    --shadow: 0 1px 2px rgba(12,14,20,0.06), 0 12px 32px -16px rgba(12,14,20,0.22);
+
+    --font-display: "Iowan Old Style", "Palatino Linotype", "URW Palladio", Georgia, "Times New Roman", serif;
+    --font-body: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    --font-mono: ui-monospace, "SF Mono", "Cascadia Code", "Roboto Mono", Consolas, monospace;
+  }
+
+  @media (prefers-color-scheme: dark){
+    :root{
+      --bg: #07080C;
+      --surface: #12141C;
+      --surface-2: #1A1D28;
+      --ink: #F2F4FA;
+      --ink-soft: #AFB7C8;
+      --ink-faint: #6C7488;
+      --accent: #6A92FF;
+      --accent-strong: #93B0FF;
+      --accent-ink: #07080C;
+      --line: rgba(242,244,250,0.12);
+      --line-strong: rgba(242,244,250,0.24);
+      --shadow: 0 1px 2px rgba(0,0,0,0.4), 0 16px 40px -18px rgba(0,0,0,0.65);
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg: #07080C; --surface: #12141C; --surface-2: #1A1D28;
+    --ink: #F2F4FA; --ink-soft: #AFB7C8; --ink-faint: #6C7488;
+    --accent: #6A92FF; --accent-strong: #93B0FF; --accent-ink: #07080C;
+    --line: rgba(242,244,250,0.12); --line-strong: rgba(242,244,250,0.24);
+    --shadow: 0 1px 2px rgba(0,0,0,0.4), 0 16px 40px -18px rgba(0,0,0,0.65);
+  }
+  :root[data-theme="light"]{
+    --bg: #F3F5FA; --surface: #FFFFFF; --surface-2: #E8ECF6;
+    --ink: #0C0E14; --ink-soft: #4A5468; --ink-faint: #8992A6;
+    --accent: #2C57F5; --accent-strong: #1B3FD1; --accent-ink: #FFFFFF;
+    --line: rgba(12,14,20,0.12); --line-strong: rgba(12,14,20,0.26);
+    --shadow: 0 1px 2px rgba(12,14,20,0.06), 0 12px 32px -16px rgba(12,14,20,0.22);
+  }
+
+  *{ box-sizing: border-box; }
+  html,body{ margin:0; padding:0; }
+  body{
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--font-body);
+    font-size: 16px;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+  img,svg{ max-width:100%; display:block; }
+
+  .wrap{
+    max-width: 1080px;
+    margin: 0 auto;
+    padding: 0 clamp(20px, 5vw, 56px);
+  }
+
+  h1,h2,h3{
+    font-family: var(--font-display);
+    font-weight: 600;
+    line-height: 1.12;
+    text-wrap: balance;
+    margin: 0;
+    color: var(--ink);
+  }
+
+  a{ color: inherit; }
+
+  .eyebrow{
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--accent-strong);
+  }
+
+  /* ---------- Header ---------- */
+  header{
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    background: color-mix(in srgb, var(--bg) 88%, transparent);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--line);
+  }
+  .header-row{
+    display:flex;
+    align-items:center;
+    justify-content: space-between;
+    padding: 16px clamp(20px, 5vw, 56px);
+    max-width: 1080px;
+    margin: 0 auto;
+  }
+  .brand{
+    font-family: var(--font-display);
+    font-size: 1.15rem;
+    font-weight: 600;
+    letter-spacing: 0.01em;
+  }
+  .brand span{ color: var(--accent); }
+  .header-cta{
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    letter-spacing: 0.04em;
+    text-decoration: none;
+    color: var(--ink-soft);
+    border: 1px solid var(--line-strong);
+    padding: 8px 14px;
+    border-radius: 999px;
+    white-space: nowrap;
+    transition: color .15s ease, border-color .15s ease, background .15s ease;
+  }
+  .header-cta:hover{
+    color: var(--accent-ink);
+    background: var(--accent);
+    border-color: var(--accent);
+  }
+
+  /* ---------- Hero ---------- */
+  .hero{
+    padding: clamp(48px, 9vw, 104px) 0 clamp(40px, 7vw, 80px);
+    display: grid;
+    grid-template-columns: 1.05fr 0.95fr;
+    gap: clamp(28px, 6vw, 64px);
+    align-items: center;
+  }
+  @media (max-width: 860px){
+    .hero{ grid-template-columns: 1fr; }
+  }
+  .hero-copy{ display:flex; flex-direction:column; gap:20px; }
+  .hero h1{ font-size: clamp(2rem, 4.4vw, 3.15rem); }
+  .hero h1 em{ font-style: normal; color: var(--accent); }
+  .hero p.lead{
+    font-size: clamp(1rem, 1.5vw, 1.15rem);
+    color: var(--ink-soft);
+    max-width: 46ch;
+  }
+  .hero-actions{
+    display:flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 6px;
+  }
+  .btn{
+    font-family: var(--font-body);
+    font-size: 0.95rem;
+    font-weight: 600;
+    text-decoration: none;
+    padding: 13px 22px;
+    border-radius: 10px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: transform .15s ease, box-shadow .15s ease, background .15s ease;
+  }
+  .btn-primary{
+    background: var(--accent);
+    color: var(--accent-ink);
+    box-shadow: var(--shadow);
+  }
+  .btn-primary:hover{ background: var(--accent-strong); transform: translateY(-1px); }
+  .btn-ghost{
+    color: var(--ink);
+    border: 1px solid var(--line-strong);
+  }
+  .btn-ghost:hover{ border-color: var(--ink-soft); }
+
+  .hero-note{
+    font-family: var(--font-mono);
+    font-size: 0.76rem;
+    color: var(--ink-faint);
+    letter-spacing: 0.02em;
+  }
+
+  /* ---------- Agenda ticket (hero visual) ---------- */
+  .agenda-card{
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    box-shadow: var(--shadow);
+    padding: 20px 20px 16px;
+    position: relative;
+  }
+  .agenda-head{
+    display:flex;
+    justify-content: space-between;
+    align-items: baseline;
+    padding-bottom: 12px;
+    margin-bottom: 6px;
+    border-bottom: 1px dashed var(--line-strong);
+  }
+  .agenda-title{ font-family: var(--font-mono); font-size: 0.72rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-faint); }
+  .agenda-day{ font-family: var(--font-mono); font-size: 0.72rem; color: var(--ink-faint); font-variant-numeric: tabular-nums; }
+
+  .slot{
+    display:grid;
+    grid-template-columns: 3.4rem 1fr auto;
+    gap: 12px;
+    align-items:center;
+    padding: 10px 2px;
+    border-bottom: 1px solid var(--line);
+  }
+  .slot:last-child{ border-bottom: none; }
+  .slot-time{ font-family: var(--font-mono); font-variant-numeric: tabular-nums; color: var(--ink-faint); font-size: 0.85rem; }
+  .slot-what{ font-size: 0.88rem; color: var(--ink); }
+  .slot-who{ display:block; font-size: 0.78rem; color: var(--ink-faint); }
+  .pill{
+    font-family: var(--font-mono);
+    font-size: 0.66rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    padding: 4px 9px;
+    border-radius: 999px;
+    white-space: nowrap;
+  }
+  .pill-ok{ background: color-mix(in srgb, var(--accent) 18%, transparent); color: var(--accent-strong); }
+  .pill-gone{ background: color-mix(in srgb, var(--ink-faint) 22%, transparent); color: var(--ink-faint); text-decoration: line-through; }
+  .pill-wait{ background: color-mix(in srgb, var(--accent) 9%, transparent); color: var(--ink-soft); }
+
+  .slot-what-live{ position: relative; display: block; font-size: 0.88rem; color: var(--ink); }
+  .pill-wrap{ position: relative; display: inline-block; }
+  .phase{ display:block; }
+  .phase:not(.phase-1){ position:absolute; top:0; left:0; }
+
+  .slot-live .phase-1{ animation: phase1 12s infinite; }
+  .slot-live .phase-2{ animation: phase2 12s infinite; }
+  .slot-live .phase-3{ animation: phase3 12s infinite; }
+  .slot-live .phase-4{ animation: phase4 12s infinite; }
+
+  @keyframes phase1{ 0%,18%{opacity:1;} 22%,100%{opacity:0;} }
+  @keyframes phase2{ 0%,18%{opacity:0;} 22%,42%{opacity:1;} 46%,100%{opacity:0;} }
+  @keyframes phase3{ 0%,42%{opacity:0;} 46%,66%{opacity:1;} 70%,100%{opacity:0;} }
+  @keyframes phase4{ 0%,66%{opacity:0;} 70%,100%{opacity:1;} }
+
+  .agenda-caption{
+    display:block;
+    margin-top: 10px;
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    color: var(--ink-faint);
+    text-align: center;
+  }
+  .agenda-foot{
+    margin-top: 14px;
+    padding-top: 12px;
+    border-top: 1px dashed var(--line-strong);
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    color: var(--ink-faint);
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    .slot-live .phase{ animation: none; opacity: 0; }
+    .slot-live .phase-4{ opacity: 1; }
+  }
+
+  /* ---------- Sections ---------- */
+  section{ padding: clamp(44px, 8vw, 88px) 0; }
+  .section-head{
+    display:flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: clamp(28px, 5vw, 48px);
+    max-width: 58ch;
+  }
+  .section-head h2{ font-size: clamp(1.5rem, 2.6vw, 2rem); }
+
+  .section-intro{
+    color: var(--ink-soft);
+    max-width: 62ch;
+    font-size: 1rem;
+    margin: -12px 0 clamp(28px, 5vw, 44px);
+  }
+  .tickets-note{
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    color: var(--ink-faint);
+    margin: 20px 0 0;
+  }
+
+  hr.rule{
+    border:none;
+    border-top: 1px solid var(--line);
+    margin: 0;
+  }
+
+  /* Problema — ledger list */
+  .ledger{
+    display:flex;
+    flex-direction: column;
+  }
+  .ledger-row{
+    display:grid;
+    grid-template-columns: 2.4rem 1fr;
+    gap: 18px;
+    padding: 22px 0;
+    border-bottom: 1px solid var(--line);
+  }
+  .ledger-row:first-child{ border-top: 1px solid var(--line); }
+  .ledger-mark{
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    color: var(--ink-faint);
+    padding-top: 3px;
+  }
+  .ledger-row h3{ font-size: 1.05rem; font-weight: 600; margin-bottom: 4px; }
+  .ledger-row p{ margin:0; color: var(--ink-soft); max-width: 60ch; font-size: 0.96rem; }
+
+  /* Cómo trabajamos — proceso en 4 pasos */
+  .process{
+    display:grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: clamp(20px, 3vw, 28px);
+    margin-bottom: clamp(40px, 7vw, 64px);
+  }
+  @media (max-width: 860px){ .process{ grid-template-columns: 1fr 1fr; } }
+  @media (max-width: 560px){ .process{ grid-template-columns: 1fr; } }
+  .process-step{
+    display:flex;
+    flex-direction: column;
+    gap: 8px;
+    padding-top: 18px;
+    border-top: 2px solid var(--line-strong);
+  }
+  .process-num{
+    font-family: var(--font-display);
+    font-size: 1.5rem;
+    color: var(--accent);
+    font-variant-numeric: tabular-nums;
+  }
+  .process-step h3{ font-size: 1.02rem; }
+  .process-step p{ margin: 0; color: var(--ink-soft); font-size: 0.92rem; }
+
+  .examples{
+    padding-top: clamp(28px, 5vw, 40px);
+    border-top: 1px dashed var(--line-strong);
+  }
+  .examples > .eyebrow{ display:block; margin-bottom: 18px; }
+
+  /* Ejemplos — ticket stub cards */
+  .tickets{
+    display:grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 22px;
+  }
+  @media (max-width: 640px){ .tickets{ grid-template-columns: 1fr; } }
+
+  .ticket{
+    position: relative;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    box-shadow: var(--shadow);
+    overflow: visible;
+  }
+  .ticket-top{ padding: 22px 22px 18px; }
+  .ticket-tag{
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--accent-strong);
+    margin-bottom: 10px;
+    display:block;
+  }
+  .ticket h3{ font-size: 1.2rem; margin-bottom: 4px; }
+  .ticket-tear{
+    border-top: 1px dashed var(--line-strong);
+    margin: 0 22px;
+    position: relative;
+  }
+  .ticket::before, .ticket::after{
+    content: "";
+    position: absolute;
+    width: 20px; height: 20px;
+    border-radius: 50%;
+    background: var(--bg);
+    top: 92px;
+  }
+  .ticket::before{ left: -10px; }
+  .ticket::after{ right: -10px; }
+  .ticket-bottom{ padding: 18px 22px 22px; }
+  .ticket-bottom p{ margin:0; color: var(--ink-soft); font-size: 0.94rem; }
+
+  /* Diferenciación */
+  .diff{
+    display:grid;
+    grid-template-columns: 0.85fr 1.15fr;
+    gap: clamp(24px, 5vw, 56px);
+    align-items: start;
+  }
+  @media (max-width: 860px){ .diff{ grid-template-columns: 1fr; } }
+  .diff-list{ list-style:none; margin:0; padding:0; display:flex; flex-direction:column; }
+  .diff-list li{
+    padding: 20px 0;
+    border-bottom: 1px solid var(--line);
+    display:grid;
+    grid-template-columns: 1fr;
+    gap: 6px;
+  }
+  .diff-list li:first-child{ border-top: 1px solid var(--line); }
+  .diff-list h3{ font-size: 1.02rem; font-weight: 600; }
+  .diff-list p{ margin:0; color: var(--ink-soft); font-size: 0.94rem; }
+
+  .diff-aside{
+    background: var(--surface-2);
+    border-radius: 14px;
+    padding: 26px 24px;
+    border: 1px solid var(--line);
+  }
+  .diff-aside .eyebrow{ display:block; margin-bottom: 10px; }
+  .diff-aside p{ color: var(--ink-soft); font-size: 0.95rem; margin: 0 0 14px; }
+  .diff-aside p:last-child{ margin-bottom: 0; }
+
+  /* Cierre / contacto */
+  .closing{
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 18px;
+    box-shadow: var(--shadow);
+    padding: clamp(28px, 6vw, 48px);
+    display:grid;
+    grid-template-columns: 1.2fr 0.8fr;
+    gap: clamp(20px, 4vw, 40px);
+    align-items: center;
+  }
+  @media (max-width: 860px){ .closing{ grid-template-columns: 1fr; } }
+  .closing h2{ font-size: clamp(1.4rem, 2.6vw, 1.9rem); margin-bottom: 10px; }
+  .closing p{ color: var(--ink-soft); max-width: 48ch; margin: 0; }
+  .closing-actions{ display:flex; flex-direction:column; gap: 10px; }
+  .closing-actions .btn{ justify-content: center; }
+  .closing-note{ font-family: var(--font-mono); font-size: 0.72rem; color: var(--ink-faint); text-align:center; }
+
+  footer{
+    padding: 28px clamp(20px,5vw,56px) 40px;
+    max-width: 1080px;
+    margin: 0 auto;
+    display:flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 10px;
+    font-family: var(--font-mono);
+    font-size: 0.74rem;
+    color: var(--ink-faint);
+  }
+
+  /* entrance */
+  .rise{ animation: rise .7s cubic-bezier(.2,.8,.2,1) both; }
+  .rise-1{ animation-delay: .03s; }
+  .rise-2{ animation-delay: .12s; }
+  .rise-3{ animation-delay: .21s; }
+  .rise-4{ animation-delay: .30s; }
+  @keyframes rise{
+    from{ opacity:0; transform: translateY(10px); }
+    to{ opacity:1; transform: translateY(0); }
+  }
+  @media (prefers-reduced-motion: reduce){
+    .rise{ animation: none; opacity: 1; transform:none; }
+  }
+
+  :focus-visible{ outline: 2px solid var(--accent); outline-offset: 2px; }
+</style>
+
+</head>
+<body>
+<header>
+  <div class="header-row">
+    <div class="brand">Potencia<span>·AI</span></div>
+    <a class="header-cta" href="#contacto">Escríbenos</a>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <section class="hero">
+    <div class="hero-copy">
+      <span class="eyebrow rise rise-1">Automatización con IA a medida</span>
+      <h1 class="rise rise-2">Detectamos dónde pierde clientas tu salón. Lo automatizamos.</h1>
+      <p class="lead rise rise-3">Cada salón pierde tiempo y clientas de una forma distinta — una llamada, un hueco vacío, un seguimiento que no llega a tiempo. Empezamos por entender el tuyo, no por venderte un paquete cerrado.</p>
+      <div class="hero-actions rise rise-4">
+        <a class="btn btn-primary" href="mailto:ivan@potencia-ai.com?subject=Quiero%20saber%20m%C3%A1s%20sobre%20Potencia-AI">Escríbenos a ivan@potencia-ai.com</a>
+        <a class="btn btn-ghost" href="#servicios">Ver cómo trabajamos</a>
+      </div>
+      <span class="hero-note rise rise-4">Salones de belleza · peluquerías · centros de estética — España</span>
+    </div>
+
+    <div class="agenda-card" role="img" aria-label="Ejemplo ilustrativo: una cita se cancela, el sistema avisa automáticamente a la lista de espera y una nueva clienta ocupa el hueco.">
+      <div class="agenda-head">
+        <span class="agenda-title">Agenda · hoy</span>
+        <span class="agenda-day">Vie 30 jul</span>
+      </div>
+
+      <div class="slot">
+        <span class="slot-time">09:30</span>
+        <span class="slot-what">Corte + color<span class="slot-who">María G.</span></span>
+        <span class="pill pill-ok">Reservado</span>
+      </div>
+
+      <div class="slot slot-live">
+        <span class="slot-time">10:30</span>
+        <span class="slot-what-live">
+          <span class="phase phase-1">Corte + color<span class="slot-who">Lucía T.</span></span>
+          <span class="phase phase-2">Cancelado a última hora<span class="slot-who">— hueco libre</span></span>
+          <span class="phase phase-3">Avisando a la lista de espera<span class="slot-who">Buscando quién puede venir</span></span>
+          <span class="phase phase-4">Peinado de evento<span class="slot-who">Carla M. — nueva clienta</span></span>
+        </span>
+        <span class="pill-wrap">
+          <span class="pill phase phase-1 pill-ok">Reservado</span>
+          <span class="pill phase phase-2 pill-gone">Cancelado</span>
+          <span class="pill phase phase-3 pill-wait">Buscando…</span>
+          <span class="pill phase phase-4 pill-ok">Reservado</span>
+        </span>
+      </div>
+
+      <div class="slot">
+        <span class="slot-time">11:00</span>
+        <span class="slot-what">Manicura<span class="slot-who">Noa R.</span></span>
+        <span class="pill pill-ok">Reservado</span>
+      </div>
+
+      <div class="agenda-foot">
+        <span>WhatsApp automático</span>
+        <span>Sin huecos vacíos</span>
+      </div>
+      <span class="agenda-caption">Ejemplo ilustrativo — tu automatización puede ser otra</span>
+    </div>
+  </section>
+
+  <hr class="rule">
+
+  <section id="problema">
+    <div class="section-head">
+      <span class="eyebrow">El dolor real</span>
+      <h2>Donde un salón pierde dinero cada semana</h2>
+    </div>
+    <div class="ledger">
+      <div class="ledger-row">
+        <span class="ledger-mark">01</span>
+        <div>
+          <h3>Llamadas que nadie coge</h3>
+          <p>Una clienta llama fuera de horario, con la línea ocupada o cuando no hay nadie libre para atenderla — y esa reserva simplemente no llega a existir.</p>
+        </div>
+      </div>
+      <div class="ledger-row">
+        <span class="ledger-mark">02</span>
+        <div>
+          <h3>Huecos que se quedan vacíos</h3>
+          <p>Una cancelación o un no-show de última hora deja un hueco en la agenda que, sin nadie avisando a tiempo a otra clienta, no se recupera.</p>
+        </div>
+      </div>
+      <div class="ledger-row">
+        <span class="ledger-mark">03</span>
+        <div>
+          <h3>Clientas que no vuelven</h3>
+          <p>Sin un recordatorio o un seguimiento en el momento justo, la siguiente cita se pospone, se olvida y termina no reservándose nunca.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <hr class="rule">
+
+  <section id="servicios">
+    <div class="section-head">
+      <span class="eyebrow">Cómo trabajamos</span>
+      <h2>Un proceso, no un catálogo</h2>
+    </div>
+    <div class="process">
+      <div class="process-step">
+        <span class="process-num">01</span>
+        <h3>Diagnóstico</h3>
+        <p>Hablamos contigo sin compromiso: cómo llegan las llamadas, cómo se gestionan las reservas, dónde se cuelan los huecos vacíos y las cancelaciones en tu día a día.</p>
+      </div>
+      <div class="process-step">
+        <span class="process-num">02</span>
+        <h3>Diseño a medida</h3>
+        <p>Con eso claro, decidimos juntos qué te conviene: que alguien conteste siempre el teléfono, que las citas se organicen solas por WhatsApp, que los huecos se rellenen automáticamente, o incluso atraer clientas nuevas. Lo que tenga sentido para ti — a veces es más de una cosa a la vez.</p>
+      </div>
+      <div class="process-step">
+        <span class="process-num">03</span>
+        <h3>Implementación</h3>
+        <p>Lo montamos, lo probamos y lo ponemos en marcha. Nos encargamos de toda la parte técnica — tú no tienes que tocar nada ni aprender a usar ninguna herramienta.</p>
+      </div>
+      <div class="process-step">
+        <span class="process-num">04</span>
+        <h3>Acompañamiento</h3>
+        <p>Una vez en marcha, seguimos ajustando y dando soporte. Es un servicio gestionado de principio a fin, no una entrega y ya está.</p>
+      </div>
+    </div>
+
+    <div class="examples">
+      <span class="eyebrow">Algunos ejemplos ya construidos</span>
+      <div class="tickets">
+        <div class="ticket">
+          <div class="ticket-top">
+            <span class="ticket-tag">Contesta el teléfono por ti</span>
+            <h3>Eva</h3>
+          </div>
+          <div class="ticket-tear"></div>
+          <div class="ticket-bottom">
+            <p>Coge cada llamada que entra al salón, aunque no haya nadie libre para atenderla: informa, resuelve dudas y apunta la reserva ella sola.</p>
+          </div>
+        </div>
+        <div class="ticket">
+          <div class="ticket-top">
+            <span class="ticket-tag">Organiza las citas por WhatsApp</span>
+            <h3>Reservas automáticas</h3>
+          </div>
+          <div class="ticket-tear"></div>
+          <div class="ticket-bottom">
+            <p>Confirma citas, responde dudas y habla con las clientas por WhatsApp — sin que nadie tenga que estar escribiendo a cada hora.</p>
+          </div>
+        </div>
+        <div class="ticket">
+          <div class="ticket-top">
+            <span class="ticket-tag">Rellena los huecos de última hora</span>
+            <h3>Lista de espera inteligente</h3>
+          </div>
+          <div class="ticket-tear"></div>
+          <div class="ticket-bottom">
+            <p>Si una clienta cancela o no aparece, avisa sola a las siguientes de la lista de espera. La primera que responde se lleva la cita.</p>
+          </div>
+        </div>
+        <div class="ticket">
+          <div class="ticket-top">
+            <span class="ticket-tag">Atrae clientas nuevas</span>
+            <h3>Captación de clientas</h3>
+          </div>
+          <div class="ticket-tear"></div>
+          <div class="ticket-bottom">
+            <p>Campañas y anuncios pensados para traer gente nueva a tu salón — no solo para organizar mejor a las que ya tienes.</p>
+          </div>
+        </div>
+      </div>
+      <p class="tickets-note">Si tu salón necesita algo distinto a esto, también lo construimos — el diagnóstico manda, no el catálogo.</p>
+    </div>
+  </section>
+
+  <hr class="rule">
+
+  <section id="diferenciacion">
+    <div class="section-head">
+      <span class="eyebrow">Por qué Potencia-AI</span>
+      <h2>Un servicio gestionado, no una herramienta suelta</h2>
+    </div>
+    <div class="diff">
+      <ul class="diff-list">
+        <li>
+          <h3>Nos encargamos de todo</h3>
+          <p>Infraestructura, mantenimiento y relación contigo — tu salón no tiene que aprender ni mantener nada por su cuenta.</p>
+        </li>
+        <li>
+          <h3>A medida de tu salón</h3>
+          <p>Cada implementación se adapta a tu flujo real de trabajo, no un producto estándar igual para todos.</p>
+        </li>
+        <li>
+          <h3>Foco en lo que se siente en el bolsillo</h3>
+          <p>Atacamos directamente los no-shows, los huecos vacíos y las clientas que no vuelven — que es donde de verdad se pierde dinero.</p>
+        </li>
+      </ul>
+      <div class="diff-aside">
+        <span class="eyebrow">Para quién</span>
+        <p>Pensado para todo el sector de la estética y la belleza en España — salones, peluquerías, clínicas, centros de solárium o masaje, escuelas... cualquier negocio del sector que quiera dejar de perder clientas por falta de tiempo para atenderlas a todas.</p>
+        <p>No vendemos una herramienta que tengas que configurar tú. Nos ocupamos de que funcione, de principio a fin.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="contacto">
+    <div class="closing">
+      <div>
+        <span class="eyebrow">Hablemos</span>
+        <h2>Cuéntanos cómo funciona tu salón y vemos qué encaja</h2>
+        <p>Sin compromiso. Escríbenos y vemos si Potencia-AI tiene sentido para tu caso concreto.</p>
+      </div>
+      <div class="closing-actions">
+        <a class="btn btn-primary" href="mailto:ivan@potencia-ai.com?subject=Quiero%20saber%20m%C3%A1s%20sobre%20Potencia-AI">Escríbenos a ivan@potencia-ai.com</a>
+        <span class="closing-note">Respuesta directa, sin formularios</span>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <span>Potencia·AI — España</span>
+  <span>Automatización con IA para salones de belleza · <a href="/privacidad/">Privacidad</a></span>
+</footer>
+</body>
+</html>
