@@ -450,6 +450,18 @@
   @media (max-width: 860px){ .closing{ grid-template-columns: 1fr; } }
   .closing h2{ font-size: clamp(1.4rem, 2.6vw, 1.9rem); margin-bottom: 10px; }
   .closing p{ color: var(--ink-soft); max-width: 48ch; margin: 0; }
+
+  /* ---------- Precios ---------- */
+  .prices{ display:grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; }
+  .price{ background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 22px 20px; display:flex; flex-direction:column; gap: 14px; box-shadow: var(--shadow); }
+  .price h3{ font-size: 1.15rem; }
+  .price-desc{ margin: 0; color: var(--ink-soft); font-size: 0.92rem; }
+  .price-row{ display:flex; flex-direction:column; gap: 2px; padding-top: 12px; border-top: 1px solid var(--line); }
+  .price-label{ font-family: var(--font-mono); font-size: 0.7rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-faint); }
+  .price-amount{ font-family: var(--font-display); font-size: 1.6rem; font-weight: 600; color: var(--ink); line-height: 1.2; }
+  .price-amount small{ font-family: var(--font-body); font-size: 0.85rem; font-weight: 400; color: var(--ink-soft); }
+  .prices-note{ margin-top: 20px; color: var(--ink-soft); font-size: 0.9rem; max-width: 70ch; }
+
   .closing-actions{ display:flex; flex-direction:column; gap: 10px; }
   .closing-actions .btn{ justify-content: center; }
   .closing-note{ font-family: var(--font-mono); font-size: 0.72rem; color: var(--ink-faint); text-align:center; }
@@ -501,7 +513,8 @@
       <h1 class="rise rise-2">Detectamos dónde pierde clientas tu salón. Lo automatizamos.</h1>
       <p class="lead rise rise-3">Cada salón pierde tiempo y clientas de una forma distinta — una llamada, un hueco vacío, un seguimiento que no llega a tiempo. Empezamos por entender el tuyo, no por venderte un paquete cerrado.</p>
       <div class="hero-actions rise rise-4">
-        <a class="btn btn-primary" href="mailto:ivan@potencia-ai.com?subject=Quiero%20saber%20m%C3%A1s%20sobre%20Potencia-AI">Escríbenos a ivan@potencia-ai.com</a>
+        <a class="btn btn-primary" href="https://wa.me/34653274059?text=Hola%20Ivan%2C%20he%20visto%20la%20web%20de%20Potencia-AI%20y%20me%20gustar%C3%ADa%20saber%20m%C3%A1s">Escríbeme por WhatsApp</a>
+        <a class="btn btn-ghost" href="mailto:ivan@potencia-ai.com?subject=Quiero%20saber%20m%C3%A1s%20sobre%20Potencia-AI">Escríbenos a ivan@potencia-ai.com</a>
         <a class="btn btn-ghost" href="#servicios">Ver cómo trabajamos</a>
       </div>
       <span class="hero-note rise rise-4">Salones de belleza · peluquerías · centros de estética — España</span>
@@ -617,7 +630,7 @@
         <div class="ticket">
           <div class="ticket-top">
             <span class="ticket-tag">Contesta el teléfono por ti</span>
-            <h3>Eva</h3>
+            <h3>Asistente de voz</h3>
           </div>
           <div class="ticket-tear"></div>
           <div class="ticket-bottom">
@@ -657,6 +670,43 @@
       </div>
       <p class="tickets-note">Si tu salón necesita algo distinto a esto, también lo construimos — el diagnóstico manda, no el catálogo.</p>
     </div>
+  </section>
+
+  <hr class="rule">
+
+  <section id="precios">
+    <div class="section-head">
+      <span class="eyebrow">Precios</span>
+      <h2>Precios orientativos</h2>
+      <p class="section-intro">Hay dos pagos distintos: la <strong>puesta en marcha</strong>, que se paga una sola vez, y la <strong>mensualidad</strong>, que cubre el funcionamiento, el mantenimiento y el soporte.</p>
+    </div>
+    <div class="prices">
+        <div class="price">
+          <h3>Asistente de WhatsApp</h3>
+          <p class="price-desc">Responde a las clientas y organiza las citas por WhatsApp.</p>
+          <div class="price-row"><span class="price-label">Puesta en marcha · pago único</span><span class="price-amount">700 € <small>una sola vez</small></span></div>
+          <div class="price-row"><span class="price-label">Mensualidad</span><span class="price-amount">300 € <small>al mes</small></span></div>
+        </div>
+        <div class="price">
+          <h3>Asistente de voz</h3>
+          <p class="price-desc">Coge todas las llamadas del salón, aunque nadie pueda atender.</p>
+          <div class="price-row"><span class="price-label">Puesta en marcha · pago único</span><span class="price-amount">800 € <small>una sola vez</small></span></div>
+          <div class="price-row"><span class="price-label">Mensualidad</span><span class="price-amount">300 € <small>al mes</small></span></div>
+        </div>
+        <div class="price">
+          <h3>WhatsApp + voz</h3>
+          <p class="price-desc">Llamadas y mensajes cubiertos a la vez.</p>
+          <div class="price-row"><span class="price-label">Puesta en marcha · pago único</span><span class="price-amount">1.500 € <small>una sola vez</small></span></div>
+          <div class="price-row"><span class="price-label">Mensualidad</span><span class="price-amount">500 € <small>al mes</small></span></div>
+        </div>
+        <div class="price">
+          <h3>Completo</h3>
+          <p class="price-desc">WhatsApp, voz y lista de espera inteligente para rellenar huecos.</p>
+          <div class="price-row"><span class="price-label">Puesta en marcha · pago único</span><span class="price-amount">1.700 € <small>una sola vez</small></span></div>
+          <div class="price-row"><span class="price-label">Mensualidad</span><span class="price-amount">500 € <small>al mes</small></span></div>
+        </div>
+    </div>
+    <p class="prices-note">Precios desde, sin IVA. El precio exacto te lo damos en una llamada de diagnóstico de 20 minutos y, una vez acordado, no cambia. La mensualidad empieza cuando el sistema ya está funcionando en tu salón. La captación de clientas (campañas y anuncios) se presupuesta aparte.</p>
   </section>
 
   <hr class="rule">
